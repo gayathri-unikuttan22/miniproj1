@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -61,8 +63,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Enter Password", Icons.person_outline, false,
-                    _passwordTextController),
+                reusableTextField1("Enter Password", Icons.person_outline, false,
+                    _passwordTextController,),
                 const SizedBox(
                   height: 20,
                 ),
@@ -87,6 +89,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 signInSignUpButton(context, false, () {
+                  FirebaseAuth.instance.createUserWithEmailAndPassword(email:_emailTextController.text,
+                   password:_passwordTextController.text).then((value)  {
+                      print("Created New Account");
+                       Navigator.push(context,
+                       MaterialPageRoute(
+                          builder: (context) => const HomeScreen()));
+                   }).onError((error, stackTrace) {
+                     print("Error ${error.toString()}");
+                   });
                   Navigator.push(
                       context,
                       MaterialPageRoute(

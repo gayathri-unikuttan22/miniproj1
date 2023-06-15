@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_proj/screens/signin_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:flutter_proj/screen_quiz/welcome/welcome_screen.dart';
 import 'package:camera/camera.dart';
 import 'models/Questions.dart';
 import 'vision_detector_views/pose_detector_view.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 
 List<CameraDescription> cameras = [];
 final Changer changer = Changer();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp();
   cameras = await availableCameras();
 
   runApp(const MyApp());

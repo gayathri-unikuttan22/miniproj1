@@ -1,5 +1,6 @@
 //import 'dart:html';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_proj/screens/signup_screen.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -17,7 +18,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final TextEditingController _passwordTextController = TextEditingController();
+  final TextEditingController _passwordTextController = TextEditingController();   
   final TextEditingController _emailTextController = TextEditingController();
 
   @override
@@ -47,16 +48,23 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(
                 height: 20,
               ),
-              reusableTextField("Enter Password", Icons.person_outline, false,
+              reusableTextField1("Enter Password", Icons.person_outline, false,
                   _passwordTextController),
               const SizedBox(
                 height: 20,
               ),
               signInSignUpButton(context, true, () {
-                Navigator.push(
+                FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailTextController.text, 
+                password: _passwordTextController.text).then((value) {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const HomeScreen()));
+                }).onError((error, stackTrace) {
+                  print("Error ${error.toString()}");
+                });
+
+    
               }),
               signUpOption()
             ],
