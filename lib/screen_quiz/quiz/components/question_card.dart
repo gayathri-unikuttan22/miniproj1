@@ -18,7 +18,7 @@ class QuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    changer.selectedOpt = 0;
+    changer.selectedOpt_dino = 0;
     changer.myQuestion = question;
     changer.notify();
     QuestionController controller = Get.put(QuestionController());

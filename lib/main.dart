@@ -6,17 +6,31 @@ import 'package:camera/camera.dart';
 import 'models/Questions.dart';
 import 'vision_detector_views/pose_detector_view.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_proj/dino/vision_detector_views/pose_detector_view_dino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
+import 'package:flame/flame.dart';
+import 'package:path_provider/path_provider.dart';
 
+import 'package:flutter_proj/dino/old_main.dart';
+import 'package:flutter_proj/dino/models/settings.dart';
+import 'package:flutter_proj/dino/models/player_data.dart';
+
+import 'package:camera/camera.dart';
 
 List<CameraDescription> cameras = [];
 final Changer changer = Changer();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Flame.device.fullScreen();
+  Flame.device.setPortrait();
+
   await Firebase.initializeApp();
   cameras = await availableCameras();
 
   runApp(const MyApp());
+  await initHive();
 }
 
 class MyApp extends StatelessWidget {
@@ -45,10 +59,63 @@ class MyApp extends StatelessWidget {
   }
 }
 
+JustDinomain() {
+  runApp(const JustStyle());
+}
+
+class JustStyle extends StatelessWidget {
+  const JustStyle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+          body: Column(
+        children: [
+          const SizedBox(
+            width: 384,
+            height: 500,
+            child: DinoRunApp(),
+          ),
+          SizedBox(
+            width: 384,
+            height: 300,
+            child: PoseDetectorViewDino(),
+          ),
+        ],
+      )),
+    );
+  }
+}
+
+Future<void> initHive() async {
+  // For web hive does not need to be initialized.
+  if (!kIsWeb) {
+    final dir = await getApplicationDocumentsDirectory();
+    Hive.init(dir.path);
+  }
+
+  Hive.registerAdapter<PlayerData>(PlayerDataAdapter());
+  Hive.registerAdapter<Settings>(SettingsAdapter());
+}
+
 class Changer extends ChangeNotifier {
+  int btnPressed = -1;
   bool positionCapture = false;
   double poseStanding = 0;
-  int selectedOpt = -1; //
+
+  int selectedOpt_quiz = -1; //
+  int selectedOpt_dino = 0;
+
+  int frame = 0;
+  double noseFix = 0;
+  bool valueFixed = false;
+  bool once = true;
+
+  bool headUp = false;
+  bool skip = false;
+  int skipFrame = 0;
   late Question myQuestion; //
 
   void notify() {

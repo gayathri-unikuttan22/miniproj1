@@ -101,7 +101,7 @@ class QuestionController extends GetxController
   }
 
   void nextQuestion() {
-    checkAns(changer.myQuestion, changer.selectedOpt);
+    checkAns(changer.myQuestion, changer.selectedOpt_quiz);
     Future.delayed(const Duration(seconds: 4), () {
       if (_questionNumber.value != _questions.length) {
         _isAnswered = false;
@@ -114,7 +114,7 @@ class QuestionController extends GetxController
         // Then start it again
         // Once flutter_proj is finish go to the next qn
 
-        changer.selectedOpt = 0;
+        changer.selectedOpt_quiz = 0;
         changer.notify();
 
         _animationController.forward().whenComplete(nextQuestion);

@@ -30,7 +30,7 @@ class Option extends StatelessWidget {
                 return kRedColor;
               }
             }
-            return index == changer.selectedOpt
+            return index == changer.selectedOpt_dino
                 ? Colors.blue
                 : Color.fromARGB(255, 15, 14, 6);
           }
