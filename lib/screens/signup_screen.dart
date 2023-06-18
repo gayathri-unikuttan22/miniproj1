@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _controller2 = TextEditingController();
   final _controller3 = TextEditingController();
 
+Future addsignupdetails(String username,String password)async{
+  await FirebaseFirestore.instance.collection('users').add(
+    {'password': password,
+    'username': username,}
+  );
+}
+Future insert()async{
+  await addsignupdetails(_passwordTextController.text.trim(), _emailTextController.text.trim());
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,12 +63,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Enter Username", Icons.person_outline, false,
+                reusableTextField("Enter Email", Icons.person_outline, false,
                     _emailTextController),
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Enter email", Icons.person_outline, false,
+                reusableTextField("Enter Username", Icons.person_outline, false,
                     _emailTextController),
                 const SizedBox(
                   height: 20,
@@ -88,21 +98,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                signInSignUpButton(context, false, () {
-                  FirebaseAuth.instance.createUserWithEmailAndPassword(email:_emailTextController.text,
-                   password:_passwordTextController.text).then((value)  {
-                      print("Created New Account");
-                       Navigator.push(context,
+                InkWell(
+                  onTap: () {
+                    insert();
+                    Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> HomeScreen()));
+                  },
+                  child: Container(
+                    width: 280,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(35)),
+                    child: Center(child: Text('Sign Up')),
+                    
+                  ),
+                )
+                 /*signInSignUpButton(context, false, () {
+                   FirebaseAuth.instance.createUserWithEmailAndPassword(email:_emailTextController.text,
+                    password:_passwordTextController.text).then((value)  {
+                       print("Created New Account");
+                        Navigator.push(context,
+                        MaterialPageRoute(
+                           builder: (context) => const HomeScreen()));
+                    }).onError((error, stackTrace) {
+                      print("Error ${error.toString()}");
+                    });
+                   Navigator.push(
+                       context,
                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen()));
-                   }).onError((error, stackTrace) {
-                     print("Error ${error.toString()}");
-                   });
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomeScreen()));
-                }),
+                           builder: (context) => const HomeScreen()));
+                 }),*/
               ],
             ),
           ))),

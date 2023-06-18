@@ -62,7 +62,7 @@ TextField reusableTextField1(String text, IconData icon, bool isPasswordType,
 
 
 Container signInSignUpButton(
-    BuildContext context, bool isLogin, Function onTap) {
+    BuildContext context, bool isLogin, Function onTap,) {
   return Container(
     width: MediaQuery.of(context).size.width,
     height: 50,
@@ -70,6 +70,7 @@ Container signInSignUpButton(
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(90)),
     child: ElevatedButton(
       onPressed: () {
+       
         onTap();
       },
       style: ButtonStyle(
