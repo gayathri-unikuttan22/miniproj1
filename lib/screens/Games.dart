@@ -4,6 +4,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_proj/screen_quiz/welcome/welcome_screen.dart';
 import 'package:get/get.dart';
+import 'package:flutter_proj/dino/widgets/main_menu.dart';
+import 'package:flutter_proj/main.dart';
 
 class GamesPage extends StatefulWidget {
   @override
@@ -123,7 +125,12 @@ class _gamesState extends State<games> {
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       child: InkWell(
                         splashColor: Colors.black26,
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>  JustDinomain()));
+                        },
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [

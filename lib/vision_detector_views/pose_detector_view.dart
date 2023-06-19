@@ -117,7 +117,7 @@ class _PoseDetectorViewState extends State<PoseDetectorView> {
           if ((degree.abs() - changer.poseStanding.abs() > 40)) {
             squat = true;
             squatno++;
-            changer.selectedOpt = (changer.selectedOpt + 1) % 4;
+            changer.selectedOpt_quiz = (changer.selectedOpt_quiz + 1) % 4;
             changer.notify();
 
             // print("SQUAT");

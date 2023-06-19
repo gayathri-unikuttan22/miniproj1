@@ -23,16 +23,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _controller1 = TextEditingController();
   final _controller2 = TextEditingController();
   final _controller3 = TextEditingController();
+  
+  void dispose(){
+    _emailTextController.dispose();
+    _passwordTextController.dispose();
+    _controller.dispose();
+    _controller1.dispose();
+    _controller2.dispose();
+    _controller3.dispose();
+    super.dispose();
+  }
 
-Future addsignupdetails(String username,String password)async{
+
+
+  Future insert() async{
+    // await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailTextController.text.trim(),
+    // password: _passwordTextController.text.trim());
+
+
+   addsignupdetails(_controller.text.trim(),_controller1.text.trim(),
+  _controller2.text.trim(),_controller3.text.trim());
+
+  }
+
+Future addsignupdetails(String dob,String medcon,String phno,String fullname)async{
   await FirebaseFirestore.instance.collection('users').add(
-    {'password': password,
-    'username': username,}
+    {'dob': dob,
+    //'email': username,
+    'fullname': fullname,
+    'medcon': medcon,
+    //'password': password,
+    'phno': phno,
+    //'username': username,
+
+    }
   );
 }
-Future insert()async{
-  await addsignupdetails(_passwordTextController.text.trim(), _emailTextController.text.trim());
-}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,11 +125,65 @@ Future insert()async{
                 const SizedBox(
                   height: 20,
                 ),
-                InkWell(
-                  onTap: () {
+                ElevatedButton(
+      onPressed: () {
+        FirebaseAuth.instance.createUserWithEmailAndPassword(email:_emailTextController.text,
+                    password:_passwordTextController.text).then((value)  {
+                       print("Created New Account");
+                        Navigator.push(context,
+                        MaterialPageRoute(
+                           builder: (context) => const HomeScreen()));
+                    }).onError((error, stackTrace) {
+                      print("Error ${error.toString()}");
+                    });
                     insert();
-                    Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> HomeScreen()));
-                  },
+                   Navigator.push(
+                       context,
+                       MaterialPageRoute(
+                           builder: (context) => const HomeScreen()));
+                 },
+       child: Text('SIGN UP',
+        style: const TextStyle(
+            color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+      style: ButtonStyle
+      (
+          backgroundColor: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.pressed)) {
+              return Colors.black26;
+            }
+            return Colors.white;
+          }),
+      
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)))
+              ),
+    ),
+              ],
+            ),
+              ),
+          ),
+      ),
+    );
+  }
+}
+  
+
+                 /* }
+                )/*InkWell(
+                  onTap: () {
+                    FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailTextController.text,
+                    password: _passwordTextController.text).then((value) {
+                      print("Created new account!");
+                      Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> HomeScreen()));
+                  }).onError((error, stackTrace) {
+                    print("Error ${error.toString()}");
+                  });
+                    insert();
+                    }
+                  
+
+                
                   child: Container(
                     width: 280,
                     height: 80,
@@ -112,8 +193,9 @@ Future insert()async{
                     child: Center(child: Text('Sign Up')),
                     
                   ),
-                )
-                 /*signInSignUpButton(context, false, () {
+                )*/
+                /* signInSignUpButton(context, false, ()
+                  {
                    FirebaseAuth.instance.createUserWithEmailAndPassword(email:_emailTextController.text,
                     password:_passwordTextController.text).then((value)  {
                        print("Created New Account");
@@ -123,6 +205,7 @@ Future insert()async{
                     }).onError((error, stackTrace) {
                       print("Error ${error.toString()}");
                     });
+                    insert();
                    Navigator.push(
                        context,
                        MaterialPageRoute(
@@ -133,4 +216,4 @@ Future insert()async{
           ))),
     );
   }
-}
+}*/

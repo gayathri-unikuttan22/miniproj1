@@ -1,12 +1,80 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_proj/read%20data/get_user_name.dart';
+//import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_proj/screens/my_drawer_header.dart';
+import 'package:flutter_proj/screens/settings.dart';
+import 'package:flutter_proj/screens/signin_screen.dart';
+//import 'package:flutter_proj/screens/signup_screen.dart';
+
+import '../utils/color_utils.dart';
+import 'Leaderboard.dart';
+import 'dashboard.dart';
+import 'Games.dart';
 //import 'package:expansion_tile_card/expansion_tile_card.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
+   const DashboardPage({Key? key}) : super(key: key);
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+ 
+  final user=FirebaseAuth.instance.currentUser;
+
+   List<String> docIDs=[];
+
+  Future getDocID() async{
+    await FirebaseFirestore.instance.collection('users').get().then((snapshot) => snapshot.docs.forEach((document) {
+      print(document.reference);
+      docIDs.add(document.reference.id);
+    },
+    ),
+    );
+
+  }
+
+  // void initState(){
   @override
   //final GlobalKey<ExpansionTileCardState> cardA = new GlobalKey();
   //final GlobalKey<ExpansionTileCardState> cardB = new GlobalKey();
 
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              // ignore: prefer_interpolation_to_compose_strings
+              'Signed up as:'+ user!.email!,
+              style: TextStyle(fontSize: 20),
+            ),
+            Expanded(
+              child: FutureBuilder(
+                future: getDocID(),
+                builder: (context,snapshot) {
+                  return ListView.builder(
+                    itemCount: docIDs.length,
+                    itemBuilder: (context,index) {
+                      return ListTile(
+                        title: GetUserName(documentID: docIDs[index]),
+                      );
+                    },
+
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}/*Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
       child: Stack(
@@ -98,4 +166,4 @@ class DashboardPage extends StatelessWidget {
       ),
     ));
   }
-}
+}*/
