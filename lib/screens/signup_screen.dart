@@ -19,24 +19,120 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordTextController = TextEditingController();
   final TextEditingController _emailTextController = TextEditingController();
-  final _controller = TextEditingController();
+  final TextEditingController _confirmPassword = TextEditingController();
   final _controller1 = TextEditingController();
   final _controller2 = TextEditingController();
   final _controller3 = TextEditingController();
   
+  @override
   void dispose(){
     _emailTextController.dispose();
     _passwordTextController.dispose();
-    _controller.dispose();
+    _confirmPassword.dispose();
     _controller1.dispose();
     _controller2.dispose();
     _controller3.dispose();
     super.dispose();
   }
 
+void createAccount() async {
+    String email = _emailTextController.text.trim();
+    String password = _passwordTextController.text.trim();
+    String cPassword = _confirmPassword.text.trim();
 
+    // create new account
 
-  Future insert() async{
+    if (password != cPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: const [
+              // Icon(icon, color: Colors.white),
+              SizedBox(width: 8.0),
+              Text("Passwords aren't matching"),
+            ],
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      try {
+
+        FocusScope.of(context).unfocus();
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
+
+        Future addUserDetails(String name, String med, String dob) async {
+          print("Welcome to Physioplay");
+          final result= await FirebaseFirestore.instance.collection('users').add({
+            'fullname': name,
+            'medical condition': med,
+            'dob': dob,
+          });
+          print(result.id);
+          print(result);
+          
+        }
+
+  addUserDetails(
+          _controller1.text.trim(),
+          _controller2.text.trim() ,
+          _controller3.text.trim(),
+        );
+
+        print("User created");
+
+        if (userCredential.user != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: const [
+                  // Icon(icon, color: Colors.white),
+                  SizedBox(width: 8.0),
+                  Text("Successfully Created Account"),
+                ],
+              ),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.pop(context);
+        }
+      } on FirebaseAuthException catch (e) {
+        print(e.code.toString());
+        String errorMessage;
+        if (e.code == 'weak-password') {
+          errorMessage = 'The password provided is too weak';
+        } else if (e.code == 'email-already-in-use') {
+          errorMessage = 'The account already exists for that email';
+        } else if (e.code == 'invalid-email') {
+          errorMessage = 'The email provided is invalid';
+        } else if (e.code == 'operation-not-allowed') {
+          errorMessage = 'Account creation is not allowed';
+        } else {
+          errorMessage = 'Error creating account';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                // Icon(icon, color: Colors.white),
+                SizedBox(width: 8.0),
+                Text(errorMessage),
+              ],
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+  
+  @override
+  Widget build1(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
+/*Future insert() async{
     // await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailTextController.text.trim(),
     // password: _passwordTextController.text.trim());
 
@@ -58,10 +154,11 @@ Future addsignupdetails(String dob,String medcon,String phno,String fullname)asy
 
     }
   );
-}
+}*/
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -105,22 +202,22 @@ Future addsignupdetails(String dob,String medcon,String phno,String fullname)asy
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Enter Date of Birth", Icons.date_range,
-                    false, _controller),
+                reusableTextField("Confirm Password", Icons.date_range,
+                    false, _confirmPassword),
                 const SizedBox(
                   height: 20,
                 ),
                 reusableTextField("Enter Full Name", Icons.person_outline,
-                    false, _controller2),
+                    false, _controller1),
                 const SizedBox(
                   height: 20,
                 ),
                 reusableTextField("Enter Medical Condition",
-                    Icons.person_outline, false, _controller1),
+                    Icons.person_outline, false, _controller2),
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Enter Phone number", Icons.phone_in_talk,
+                reusableTextField("Enter Date of Birth", Icons.phone_in_talk,
                     false, _controller3),
                 const SizedBox(
                   height: 20,
@@ -136,7 +233,7 @@ Future addsignupdetails(String dob,String medcon,String phno,String fullname)asy
                     }).onError((error, stackTrace) {
                       print("Error ${error.toString()}");
                     });
-                    insert();
+                    createAccount();
                    Navigator.push(
                        context,
                        MaterialPageRoute(

@@ -6,7 +6,7 @@ import 'package:camera/camera.dart';
 import 'models/Questions.dart';
 import 'vision_detector_views/pose_detector_view.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+// import 'firebase_options.dart';
 import 'package:flutter_proj/dino/vision_detector_views/pose_detector_view_dino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';

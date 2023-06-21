@@ -1,5 +1,6 @@
 //import 'dart:html';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_proj/screens/signup_screen.dart';
@@ -54,6 +55,12 @@ class _SignInScreenState extends State<SignInScreen> {
                 height: 20,
               ),
               signInSignUpButton(context, true, () {
+
+                FirebaseFirestore.instance.collection('hi').add({
+                  'hi': 'hello'
+                });
+
+
                 FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailTextController.text, 
                 password: _passwordTextController.text).then((value) {
                   Navigator.push(

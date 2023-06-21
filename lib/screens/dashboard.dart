@@ -42,17 +42,83 @@ class _DashboardPageState extends State<DashboardPage> {
   //final GlobalKey<ExpansionTileCardState> cardA = new GlobalKey();
   //final GlobalKey<ExpansionTileCardState> cardB = new GlobalKey();
 
-  Widget build(BuildContext context){
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SingleChildScrollView(
+      child: Stack(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            margin: const EdgeInsets.fromLTRB(25, 10, 25, 10),
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(width: 5, color: Colors.white),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 20,
+                        offset: Offset(5, 5),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.person,
+                    size: 60,
+                    color: Colors.blue,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  height: 300, // Adjust the height as needed
+                  width: double.infinity,
+                  child: Expanded(
+                    child: FutureBuilder(
+                      future: getDocID(),
+                      builder: (context, snapshot) {
+                        return ListView.builder(
+                          itemCount: docIDs.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListTile(
+                                title: GetUserName(documentID: docIDs[index]),
+                                tileColor: const Color.fromARGB(255, 17, 51, 79),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+}/* Widget build(BuildContext context){
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+              // ignore: prefer_interpolation_to_compose_strings
+              ' ${user?.email ?? "Value is null"}',
+              style: TextStyle(fontSize: 20),
+            ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              // ignore: prefer_interpolation_to_compose_strings
-              'Signed up as:'+ user!.email!,
-              style: TextStyle(fontSize: 20),
-            ),
             Expanded(
               child: FutureBuilder(
                 future: getDocID(),
@@ -60,8 +126,12 @@ class _DashboardPageState extends State<DashboardPage> {
                   return ListView.builder(
                     itemCount: docIDs.length,
                     itemBuilder: (context,index) {
-                      return ListTile(
-                        title: GetUserName(documentID: docIDs[index]),
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          title: GetUserName(documentID: docIDs[index]),
+                          tileColor: const Color.fromARGB(255, 17, 51, 79),
+                        ),
                       );
                     },
 
@@ -74,7 +144,8 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
-}/*Widget build(BuildContext context) {
+}
+Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
       child: Stack(
