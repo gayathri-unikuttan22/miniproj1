@@ -23,9 +23,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _controller1 = TextEditingController();
   final _controller2 = TextEditingController();
   final _controller3 = TextEditingController();
-  
+
   @override
-  void dispose(){
+  void dispose() {
     _emailTextController.dispose();
     _passwordTextController.dispose();
     _confirmPassword.dispose();
@@ -35,7 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
-void createAccount() async {
+  void createAccount() async {
     String email = _emailTextController.text.trim();
     String password = _passwordTextController.text.trim();
     String cPassword = _confirmPassword.text.trim();
@@ -57,26 +57,25 @@ void createAccount() async {
       );
     } else {
       try {
-
         FocusScope.of(context).unfocus();
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: email, password: password);
 
         Future addUserDetails(String name, String med, String dob) async {
           print("Welcome to Physioplay");
-          final result= await FirebaseFirestore.instance.collection('users').add({
+          final result =
+              await FirebaseFirestore.instance.collection('users').add({
             'fullname': name,
             'medical condition': med,
             'dob': dob,
           });
           print(result.id);
           print(result);
-          
         }
 
-  addUserDetails(
+        addUserDetails(
           _controller1.text.trim(),
-          _controller2.text.trim() ,
+          _controller2.text.trim(),
           _controller3.text.trim(),
         );
 
@@ -126,7 +125,7 @@ void createAccount() async {
       }
     }
   }
-  
+
   @override
   Widget build1(BuildContext context) {
     // TODO: implement build
@@ -158,7 +157,6 @@ Future addsignupdetails(String dob,String medcon,String phno,String fullname)asy
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -170,23 +168,23 @@ Future addsignupdetails(String dob,String medcon,String phno,String fullname)asy
         ),
       ),
       body: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-            hexStringToColor('20539E'),
-            hexStringToColor('20797C'),
-            hexStringToColor('209E5A')
-          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-          child: SingleChildScrollView(
-              child: Padding(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+          hexStringToColor('20539E'),
+          hexStringToColor('20797C'),
+          hexStringToColor('209E5A')
+        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+        child: SingleChildScrollView(
+          child: Padding(
             padding: EdgeInsets.fromLTRB(
                 20, MediaQuery.of(context).size.height * .2, 20, 0),
             child: Column(
               children: <Widget>[
-                const SizedBox(
-                  height: 20,
-                ),
+                // const SizedBox(
+                //   height: 10,
+                // ),
                 reusableTextField("Enter Email", Icons.person_outline, false,
                     _emailTextController),
                 const SizedBox(
@@ -197,13 +195,17 @@ Future addsignupdetails(String dob,String medcon,String phno,String fullname)asy
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField1("Enter Password", Icons.person_outline, false,
-                    _passwordTextController,),
+                reusableTextField1(
+                  "Enter Password",
+                  Icons.password,
+                  false,
+                  _passwordTextController,
+                ),
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Confirm Password", Icons.date_range,
-                    false, _confirmPassword),
+                reusableTextField1("Confirm Password", Icons.password, false,
+                    _confirmPassword),
                 const SizedBox(
                   height: 20,
                 ),
@@ -213,53 +215,64 @@ Future addsignupdetails(String dob,String medcon,String phno,String fullname)asy
                   height: 20,
                 ),
                 reusableTextField("Enter Medical Condition",
-                    Icons.person_outline, false, _controller2),
+                    Icons.medical_information, false, _controller2),
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Enter Date of Birth", Icons.phone_in_talk,
+                reusableTextField("Enter Date of Birth", Icons.date_range,
                     false, _controller3),
                 const SizedBox(
                   height: 20,
                 ),
-                ElevatedButton(
-      onPressed: () {
-        FirebaseAuth.instance.createUserWithEmailAndPassword(email:_emailTextController.text,
-                    password:_passwordTextController.text).then((value)  {
-                       print("Created New Account");
-                        Navigator.push(context,
-                        MaterialPageRoute(
-                           builder: (context) => const HomeScreen()));
-                    }).onError((error, stackTrace) {
-                      print("Error ${error.toString()}");
-                    });
-                    createAccount();
-                   Navigator.push(
-                       context,
-                       MaterialPageRoute(
-                           builder: (context) => const HomeScreen()));
-                 },
-       child: Text('SIGN UP',
-        style: const TextStyle(
-            color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 16),
-      ),
-      style: ButtonStyle
-      (
-          backgroundColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.pressed)) {
-              return Colors.black26;
-            }
-            return Colors.white;
-          }),
-      
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)))
-              ),
-    ),
+                new SizedBox(
+                  width: 200.0,
+                  height: 50.0,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                              email: _emailTextController.text,
+                              password: _passwordTextController.text)
+                          .then((value) {
+                        print("Created New Account");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomeScreen()));
+                      }).onError((error, stackTrace) {
+                        print("Error ${error.toString()}");
+                      });
+                      createAccount();
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => const HomeScreen()));
+                    },
+                    child: Text(
+                      'SIGN UP',
+                      style: const TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith((states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return Colors.black26;
+                          }
+                          return Colors.white;
+                        }),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30)))),
+                  ),
+                )
               ],
             ),
-              ),
           ),
+        ),
       ),
     );
   }
